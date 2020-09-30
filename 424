@@ -1,0 +1,53 @@
+/*
+  The question is Longest Repeating Character replacement! 
+  Basically we can replace atmost K characters in the strings and then find the length of the longest substring consisting of single repeating character.
+  
+  Intuition : We will find the length of the longest substring that contain :
+              atmost K characters which are not same to the character "X", so that we can replace those K characters,
+              where resultant string is made of a single repeating character "X".
+          
+  Algorithm : I use sliding window technique to solve this. 
+              A frequency array to keep track of the count of the characters.
+              Keep track of the count of the character which has most frequently occurred. 
+              Keep expanding the window until the length of the substring is less than or equal to K + countOF("X") { where X is the most frequent char of the considered string }
+                          Why? 
+                      --> Say if the length of the window is A and count of most occurred element is C.
+                          How many chars can we replace?  K
+                      --> So, A should always be less than or equal to C + K.
+                      --> When A becomes greater than C + K.. start shrinking the window by removing characters from the beginning of the window.
+              Keep track of the maxSize substring following the above criteria. 
+              
+  Time Complexity : N is the length of the string. 
+                    I am using nested loops but the time complexity would still be O(N) because each character is traversed atmost twice.
+                    2*O(N)
+                    ~O(N)
+                    Linear time complexity.
+  Space Complexity : A frequency array of size 26 is used. Why? Because the string consists of only UPPERCASE characters.
+                    O(26), which is constant.
+                    
+  Thus, the solution is linear in time and uses constant space. 
+    
+*/
+class Solution {
+public:
+    int characterReplacement(string s, int k) {
+        int freq[26];
+        memset(freq,0,sizeof freq);
+        int start=0, end=0, n = s.size();
+        int maxLen = 0;
+        int maxFreq = 0;
+        while(end<n)
+        {
+            freq[s[end]-'A']++;
+            maxFreq = max(maxFreq,freq[s[end]-'A']);
+            end++;
+            while(end - start > k + maxFreq)
+            {
+                freq[s[start]-'A']--;
+                start++;
+            }
+            maxLen = max(end-start,maxLen);
+        }
+        return maxLen;
+    }
+};
